@@ -22,7 +22,6 @@
 #define  DATA_COUNT  10
 uint32_t DestBuf[DATA_COUNT];
 uint32_t SrcBuf[DATA_COUNT];
-uint32_t SPIBufRD[DATA_COUNT];   // для сравнения если потребуется.
 
 uint32_t DMA_Completed = 0;
 
@@ -41,7 +40,7 @@ int main(void)
   uint32_t result;
   
   //  Clock
-  BRD_Clock_Init_HSE_PLL(10); // 80MHz
+  BRD_Clock_Init_HSE_PLL(RST_CLK_CPU_PLLmul10); // 80MHz
   
   //  Controls
   BRD_LEDs_Init();
@@ -69,14 +68,13 @@ int main(void)
     for (i = 0; i < DATA_COUNT; i++)
     {
       DestBuf[i] = 0;
-      SPIBufRD[i] = 0;
       SrcBuf[i]  = i + 1; //  Fill with any data
     }
     
     //  Run SPI Cycles
     for (i = 0; i < DATA_COUNT; i++)
     {
-      SPIBufRD[i] = BRD_SPI_Master_WRRD(pBRD_SPIx, SrcBuf[i]);
+      BRD_SPI_Master_WR(pBRD_SPIx, SrcBuf[i]);
     }
 
     //  Wait DMA Completed
